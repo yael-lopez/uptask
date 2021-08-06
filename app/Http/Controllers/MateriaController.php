@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Materia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MateriaController extends Controller
 {
+    public function __construct()
+    {
+        return $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +19,8 @@ class MateriaController extends Controller
      */
     public function index()
     {
-        return view('materias.index');
+        $materias = Materia::where('user_id', Auth::user()->id)->get();
+        return view('materias.index', compact('materias'));
     }
 
     /**
@@ -39,6 +45,15 @@ class MateriaController extends Controller
             'nombre' => 'required|string',
             'descripcion' => 'required|string'
         ]);
+
+        $materia = new Materia();
+        $materia->user_id = Auth::user()->id;
+        $materia->nombre = $data["nombre"];
+        $materia->descripcion = $data["descripcion"];
+        $materia->save();
+
+        return redirect()->route('materias.index')
+            ->with('success', 'Materia creada con éxito');
     }
 
     /**
@@ -72,7 +87,17 @@ class MateriaController extends Controller
      */
     public function update(Request $request, Materia $materia)
     {
-        //
+        $data = $request->validate([
+            'nombre' => 'required|string',
+            'descripcion' => 'required|string'
+        ]);
+
+        $materia->nombre = $data["nombre"];
+        $materia->descripcion = $data["descripcion"];
+        $materia->update();
+
+        return redirect()->route('materias.index')
+            ->with('update', 'Materia actualizada con éxito');
     }
 
     /**
@@ -83,6 +108,8 @@ class MateriaController extends Controller
      */
     public function destroy(Materia $materia)
     {
-        //
+        $materia->delete();
+        return redirect()->route('materias.index')
+            ->with('delete', 'Materia eliminada con éxito');
     }
 }

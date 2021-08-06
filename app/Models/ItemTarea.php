@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class ItemTarea extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'tarea_id',
+        'nombre',
+        'descripcion',
+        'imagen',
+        'fecha_entrega',
+        'estatus',
+    ];
 }

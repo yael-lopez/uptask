@@ -12,7 +12,7 @@
             <div class="card-header">
                 <p>Formulario para agregar tareas</p>
             </div>
-            <form method="POST">
+            <form action="{{ route('tareas.store') }}" method="POST" novalidate>
                 @csrf
                 <div class="card-body">
                     
@@ -28,8 +28,12 @@
                     <label for="materia">Materia</label>
                     <select class="form-control" name="materia" id="materia">
                         <option value="" disabled selected>-- Seleccione --</option>
-                        <option value="">Aplicaciones web</option>
-                        <option value="">Desarrollo Movil Multiplataforma</option>
+                        @foreach ($materias as $materia)
+                            <option {{ old('materia') == $materia->id ? 'selected' : '' }} 
+                                value="{{ $materia->id }}">
+                                {{ $materia->nombre }}
+                            </option>
+                        @endforeach
                     </select>
                     @error('materia')
                         <span class="invalid-feedback d-block" role="alert">

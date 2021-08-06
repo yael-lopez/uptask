@@ -18,7 +18,7 @@ class CreateItemTareasTable extends Migration
             $table->integer('tarea_id');
             $table->string('nombre');
             $table->text('descripcion');
-            $table->text('imagen');
+            $table->text('imagen')->nullable();
             $table->date('fecha_entrega');
             $table->boolean('estatus');
             $table->timestamps();

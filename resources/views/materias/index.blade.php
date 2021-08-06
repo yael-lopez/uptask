@@ -8,6 +8,34 @@
 
 @section('content')
     <div class="container">
+
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>¡Exito!</strong> {{session('success')}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        @if(session('update'))
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>¡Exito!</strong> {{session('update')}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        @if(session('delete'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>¡Exito!</strong> {{session('delete')}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
         <div class="card-outline card-info">
             <div class="card-header">
                 <a class="btn btn-primary" href="{{ route('materias.create') }}">Agregar materia</a>
@@ -22,38 +50,30 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Aplicaciones web</td>
-                            <td>Aplicaciones web para la industria</td>
-                            <td>
-                                <a href="{{ route('materias.edit', ['materia' => 1]) }}" class="btn btn-warning btn-sm">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </a>
-                                <form method="POST">
-                                    <button type="submit"
-                                        class="btn btn-danger btn-sm"
-                                        onclick="return confirm('¿Deseas borrar este registro?')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Desarrollo Movil Multiplataforma</td>
-                            <td>Desarrollo Movil Multiplataforma</td>
-                            <td>
-                                <a href="#" class="btn btn-warning btn-sm">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </a>
-                                <form method="POST">
-                                    <button type="submit"
-                                        class="btn btn-danger btn-sm"
-                                        onclick="return confirm('¿Deseas borrar este registro?')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
+                        @foreach ($materias as $materia)
+                            
+                            <tr>
+                                <td> {{ $materia->nombre }} </td>
+                                <td> {{ $materia->descripcion }} </td>
+                                <td>
+                                    <a href="{{ route('materias.edit', ['materia' => $materia->id]) }}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                    <form action="{{ route('materias.destroy', ['materia' => $materia->id]) }}"
+                                         method="POST">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit"
+                                            class="btn btn-danger btn-sm"
+                                            onclick="return confirm('¿Deseas borrar este registro?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                        @endforeach
                     </tbody>
                   </table>
             </div>

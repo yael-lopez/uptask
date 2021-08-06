@@ -3,7 +3,8 @@
 @section('title', 'Materias')
 
 @section('content_header')
-    <h1>Agregar item a la materia: Aplicaciones web</h1>
+    <h1>Agregar item a la materia: {{ $materia->nombre }} </h1>
+    <h4>Agregando item a la tarea: {{ $tarea->nombre_tarea  }}</h4>
 @stop
 
 @section('content')
@@ -12,7 +13,7 @@
             <div class="card-header">
                 <p>Formulario para agregar items</p>
             </div>
-            <form method="POST">
+            <form action="{{ route('item.store', ['tarea' => $tarea->id]) }}" method="POST">
                 @csrf
                 <div class="card-body">
                     
@@ -27,14 +28,25 @@
 
                     <label for="descripcion">Descripcion</label>
                     <textarea class="form-control" rows="5" name="descripcion" id="descripcion">
-
+                        {{ old('descripcion') }}
                     </textarea>
+                    @error('descripcion')
+                        <span class="invalid-feedback d-block" role="alert">
+                            <strong> {{$message}} </strong>
+                        </span>
+                    @enderror
 
                     <label for="imagen">Imagen</label>
                     <input type="file" class="form-control" name="imagen" id="imagen">
 
                     <label for="fecha_entrega">Fecha de entrega</label>
-                    <input type="date" name="fecha_entrega" id="fecha_entrega" class="form-control">
+                    <input type="date" name="fecha_entrega" id="fecha_entrega"
+                         class="form-control" value="{{ old('fecha_entrega') }}">
+                    @error('fecha_entrega')
+                         <span class="invalid-feedback d-block" role="alert">
+                             <strong> {{$message}} </strong>
+                         </span>
+                     @enderror
 
                 </div>
                 <div class="card-footer">

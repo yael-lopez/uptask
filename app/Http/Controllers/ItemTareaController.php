@@ -3,18 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\ItemTarea;
+use App\Models\Materia;
+use App\Models\Tarea;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ItemTareaController extends Controller
 {
+    public function __construct()
+    {
+        return $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Tarea $tarea)
     {
-        return view('item.index');
+        $materia = Materia::find($tarea->materia_id);
+        $items = ItemTarea::where('tarea_id', $tarea->id)->get();
+        return view('item.index', 
+            compact('materia', 'tarea', 'items')
+            );
     }
 
     /**
@@ -22,9 +33,10 @@ class ItemTareaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Tarea $tarea)
     {
-        return view('item.create');
+        $materia = Materia::find($tarea->materia_id);
+        return view('item.create', compact('tarea', 'materia'));
     }
 
     /**
@@ -33,9 +45,24 @@ class ItemTareaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Tarea $tarea)
     {
-        //
+        $data = $request->validate([
+            'nombre' => 'required|string',
+            'descripcion' => 'required|string',
+            'fecha_entrega' => 'required'
+        ]);
+
+        $item = new ItemTarea();
+        $item->tarea_id = $tarea->id;
+        $item->nombre = $data["nombre"];
+        $item->descripcion = $data["descripcion"];
+        $item->fecha_entrega = $data["fecha_entrega"];
+        $item->estatus = 0;
+        $item->save();
+
+        return redirect()->route('item.index', ['tarea' => $tarea->id])
+            ->with('success', 'Item creado con éxito');
     }
 
     /**

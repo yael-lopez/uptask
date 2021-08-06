@@ -8,34 +8,44 @@
 
 @section('content')
 <div class="container">
+
     <h1 class="text-center text-info text-uppercase">Proximas entregas</h1>
-    <div class="card">
-        <div class="card-header">Materia: Aplicaciones Web</div>
-        <div class="card-body">
-            <h4 class="text center">Nombre de la tarea: Proyecto final</h4>
-            <p>Items:</p>
-            <ul>
-                <li>Crear las vistas del proyecto final</li>
-                <li>Fecha de entrega: 2021/07/18</li>
-            </ul>
+
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>¡Exito!</strong> {{session('success')}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
-        <div class="card-footer text-right">
-            <button class="btn btn-primary">Marcar como completada</button>
+    @endif
+
+    @foreach ($items as $item)
+        
+        <div class="card">
+            <div class="card-header">Materia: {{ $item->nombre }} </div>
+            <div class="card-body">
+                <h4 class="text center">Nombre de la tarea: {{ $item->nombre_tarea }} </h4>
+                <p>Items:</p>
+                <ul>
+                    <li>
+                        {{ $item->descripcion }} - Fecha de entrega {{ $item->fecha_entrega }}
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer text-right">
+                <form action="{{ route('home.completado', ['item' => $item->id]) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    <button type="submit" class="btn btn-primary">
+                        Marcar como completada
+                    </button>
+                </form>
+            </div>
         </div>
-    </div>
-    <div class="card">
-        <div class="card-header">Materia: Aplicaciones Web</div>
-        <div class="card-body">
-            <h4 class="text center">Nombre de la tarea: Proyecto final</h4>
-            <p>Items:</p>
-            <ul>
-                <li>Crear los controladores del proyecto final</li>
-                <li>Fecha de entrega: 2021/07/23</li>
-            </ul>
-        </div>
-        <div class="card-footer text-right">
-            <button class="btn btn-primary">Marcar como completada</button>
-        </div>
-    </div>
+
+    @endforeach
+
 </div>
 @stop
